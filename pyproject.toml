@@ -1,0 +1,225 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fastapi-boilerplate"
+version = "0.1.0"
+description = "FastAPI boilerplate with PostgreSQL, Redis, Arq, JWT, and more"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Johan Pham" },
+]
+keywords = ["fastapi", "boilerplate", "postgresql", "redis", "sqlalchemy", "async"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+]
+
+dependencies = [
+    "fastapi[all]>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.13.0",
+    "asyncpg>=0.29.0",
+    "psycopg2-binary>=2.9.9",
+    "redis>=5.0.0",
+    "aioredis>=2.0.0",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.9",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.6.0",
+    "email-validator>=2.2.0",
+    "arq>=0.29.0",
+    "aiosmtplib>=3.0.0",
+    "jinja2>=3.1.4",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "httpx>=0.27.0",
+    "faker>=32.0.0",
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+    "black>=24.8.0",
+    "pre-commit>=3.8.0",
+    "commitizen>=3.22.0",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+select = [
+    "E",
+    "F",
+    "I",
+    "N",
+    "UP",
+    "W",
+    "B",
+    "A",
+    "C4",
+    "DTZ",
+    "T10",
+    "EM",
+    "EXE",
+    "FA",
+    "ISC",
+    "ICN",
+    "G",
+    "INP",
+    "PIE",
+    "T20",
+    "PYI",
+    "PT",
+    "Q",
+    "RSE",
+    "RET",
+    "SLF",
+    "SIM",
+    "TID",
+    "TCH",
+    "INT",
+    "ARG",
+    "PTH",
+    "ERA",
+    "PD",
+    "PL",
+    "TRY",
+    "RUF",
+    "PERF",
+]
+ignore = [
+    "E501",
+    "B008",
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "migrations",
+    "alembic",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  migrations
+  | alembic
+)/
+'''
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+markers = [
+    "asyncio: marks tests as async",
+    "unit: marks tests as unit tests",
+    "integration: marks tests as integration tests",
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/alembic/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "v$version"
+version_files = [
+    "pyproject.toml:version",
+]
+
+[[tool.commitizen.schema]]
+type = "feat"
+tags = ["feature", "enhancement"]
+description = "A new feature"
+
+[[tool.commitizen.schema]]
+type = "fix"
+tags = ["bugfix", "fix"]
+description = "A bug fix"
+
+[[tool.commitizen.schema]]
+type = "docs"
+tags = ["documentation", "docs"]
+description = "Documentation only changes"
+
+[[tool.commitizen.schema]]
+type = "style"
+tags = ["style"]
+description = "Changes that do not affect the meaning of the code"
+
+[[tool.commitizen.schema]]
+type = "refactor"
+tags = ["refactor"]
+description = "A code change that neither fixes a bug nor adds a feature"
+
+[[tool.commitizen.schema]]
+type = "perf"
+tags = ["performance"]
+description = "A code change that improves performance"
+
+[[tool.commitizen.schema]]
+type = "test"
+tags = ["test", "testing"]
+description = "Adding missing tests or correcting existing tests"
+
+[[tool.commitizen.schema]]
+type = "chore"
+tags = ["chore"]
+description = "Changes to build process or auxiliary tools"
+

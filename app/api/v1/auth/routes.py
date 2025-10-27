@@ -1,0 +1,66 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.database import get_db
+from app.core.security import create_access_token, verify_password, get_password_hash, create_refresh_token
+from app.models.user import User
+from app.api.v1.auth.schemas import LoginRequest, RegisterRequest, TokenResponse, UserResponse
+from app.repositories.user_repository import UserRepository
+from app.services.user_service import UserService
+import uuid
+
+router = APIRouter()
+
+
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def register(
+    request: RegisterRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    user_repo = UserRepository(db)
+    user_service = UserService(user_repo)
+
+    existing_user = await user_repo.get_by_email(request.email)
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+
+    user_data = {
+        "id": str(uuid.uuid4()),
+        "email": request.email,
+        "name": request.name,
+        "password": get_password_hash(request.password),
+    }
+
+    user = await user_service.create_user(user_data)
+    return UserResponse(
+        id=user.id,
+        email=user.email,
+        name=user.name,
+    )
+
+
+@router.post("/login", response_model=TokenResponse)
+async def login(
+    request: LoginRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    user_repo = UserRepository(db)
+    user = await user_repo.get_by_email(request.email)
+
+    if not user or not verify_password(request.password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token = create_access_token(data={"sub": user.id})
+    refresh_token = create_refresh_token(data={"sub": user.id})
+
+    return TokenResponse(
+        access_token=access_token,
+        token_type="bearer"
+    )
+
