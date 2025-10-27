@@ -1,6 +1,26 @@
-# FastAPI Boilerplate
+# <p style="text-align: center">FastAPI Boilerplate</p>
 
-FastAPI boilerplate with PostgreSQL, Redis, Arq, JWT authentication, and more.
+<div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; text-align: center;">
+
+  <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Pydantic-E92063?logo=pydantic&logoColor=fff&style=for-the-badge" alt="Pydantic" />
+  <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="Postgres" />
+  <img src="https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
+  <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white" alt="Swagger" />
+  <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens" alt="JWT" />
+  <img src="https://img.shields.io/badge/jinja-white.svg?style=for-the-badge&logo=jinja&logoColor=black" alt="Jinja" />
+  <img src="https://img.shields.io/badge/pytest-%23ffffff.svg?style=for-the-badge&logo=pytest&logoColor=2f9fe3" alt="Pytest" />
+  <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="Postgres" />
+
+</div>
+
+## Description
+
+[FastAPI Boilerplate](https://github.com/johanpham2711/fastapi-boilerplate) with [FastAPI](https://fastapi.tiangolo.com/#installation), [Postgres](https://www.postgresql.org/),...
+
+by [Johan Pham](https://github.com/johanpham2711)
 
 ## Tech Stack
 
@@ -64,7 +84,7 @@ fastapi-boilerplate/
 1. **Clone the repository**:
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/johanpham2711/fastapi-boilerplate
 cd fastapi-boilerplate
 ```
 
