@@ -36,7 +36,11 @@ class Settings(BaseSettings):
     smtp_from_email: str = "noreply@example.com"
     smtp_from_name: str = "FastAPI Boilerplate"
 
-    cors_origins: list[str] = ["http://localhost:3000", "http://localhost:8080"]
+    cors_origins: str = "http://localhost:3000,http://localhost:8080"
+    
+    @property
+    def cors_origins_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_origins.split(",")]
 
     arq_redis_url: str = "redis://localhost:6379/1"
 

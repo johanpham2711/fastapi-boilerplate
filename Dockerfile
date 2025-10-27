@@ -18,7 +18,7 @@ FROM base as builder
 RUN pip install --upgrade pip setuptools wheel
 RUN pip install uv
 
-COPY pyproject.toml ./
+COPY pyproject.toml README.md ./
 RUN uv pip install --system -e ".[dev]"
 
 FROM base as runtime
