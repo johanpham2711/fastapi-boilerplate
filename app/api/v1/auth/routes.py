@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
-from app.core.security import create_access_token, verify_password, get_password_hash, create_refresh_token
-from app.models.user import User
+from app.core.security import create_access_token, verify_password, get_password_hash
 from app.api.v1.auth.schemas import LoginRequest, RegisterRequest, TokenResponse, UserResponse
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
+from app.services.cache_service import cache_service
 import uuid
 
 router = APIRouter()
@@ -57,10 +57,23 @@ async def login(
         )
 
     access_token = create_access_token(data={"sub": user.id})
-    refresh_token = create_refresh_token(data={"sub": user.id})
-
+    
     return TokenResponse(
         access_token=access_token,
         token_type="bearer"
     )
 
+
+@router.post("/logout", status_code=status.HTTP_200_OK)
+async def logout(
+    token: str = Depends(lambda request: request.headers.get("authorization", "").replace("Bearer ", "")),
+):
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token required"
+        )
+    
+    await cache_service.set_blacklist_token(token, ttl=3600)
+    
+    return {"message": "Logged out successfully"}
