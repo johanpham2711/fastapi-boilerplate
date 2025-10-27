@@ -12,6 +12,16 @@ class RegisterRequest(BaseModel):
     name: str | None = None
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class VerifyForgotPasswordRequest(BaseModel):
+    email: EmailStr
+    reset_token: str
+    new_password: str
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
@@ -24,4 +34,3 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
-

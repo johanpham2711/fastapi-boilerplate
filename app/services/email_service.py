@@ -54,10 +54,19 @@ class EmailService:
 
     async def send_password_reset_email(self, to_email: str, reset_token: str) -> bool:
         subject = "Password Reset Request"
-        body = f"Click this link to reset your password: /reset-password?token={reset_token}"
-        body_html = (
-            f"<p>Click <a href='/reset-password?token={reset_token}'>here</a> to reset your password.</p>"
-        )
+        reset_link = f"http://localhost:3000/reset-password?token={reset_token}"
+        body = f"Click this link to reset your password: {reset_link}"
+        body_html = f"""
+        <html>
+        <body>
+            <h2>Password Reset Request</h2>
+            <p>You requested to reset your password. Click the link below to proceed:</p>
+            <a href="{reset_link}">Reset Password</a>
+            <p>This link will expire in 1 hour.</p>
+            <p>If you didn't request this, please ignore this email.</p>
+        </body>
+        </html>
+        """
         return await self.send_email(to_email, subject, body, body_html)
 
 
