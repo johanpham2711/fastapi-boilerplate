@@ -16,7 +16,7 @@ import uuid
 router = APIRouter()
 
 
-@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED, summary="Create user")
 async def create_user(
     request: UserCreateRequest,
     db: AsyncSession = Depends(get_db),
@@ -46,7 +46,7 @@ async def create_user(
     )
 
 
-@router.get("/", response_model=UserListResponse)
+@router.get("/", response_model=UserListResponse, summary="Get all users")
 async def get_users(
     skip: int = 0,
     limit: int = 100,
@@ -62,7 +62,7 @@ async def get_users(
     )
 
 
-@router.get("/{user_id}", response_model=UserResponse)
+@router.get("/{user_id}", response_model=UserResponse, summary="Get user by ID")
 async def get_user(
     user_id: str,
     db: AsyncSession = Depends(get_db),
@@ -84,7 +84,7 @@ async def get_user(
     )
 
 
-@router.put("/{user_id}", response_model=UserResponse)
+@router.put("/{user_id}", response_model=UserResponse, summary="Update user")
 async def update_user(
     user_id: str,
     request: UserUpdateRequest,
@@ -110,7 +110,7 @@ async def update_user(
     )
 
 
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete user")
 async def delete_user(
     user_id: str,
     db: AsyncSession = Depends(get_db),

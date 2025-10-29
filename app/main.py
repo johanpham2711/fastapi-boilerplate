@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exceptions import RequestValidationError
 
@@ -20,8 +21,9 @@ async def lifespan(app: FastAPI):
     await init_db()
     await cache_service.connect()
     yield
-    await cache_service.disconnect()
     await close_db()
+    await cache_service.disconnect()
+
 
 
 app = FastAPI(
@@ -29,7 +31,34 @@ app = FastAPI(
     description="FastAPI boilerplate with PostgreSQL, Redis, Arq, and JWT",
     version=settings.version,
     lifespan=lifespan,
+    swagger_ui_parameters={
+        "persistAuthorization": True,
+    },
 )
+
+from fastapi.openapi.utils import get_openapi
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+    openapi_schema["components"]["securitySchemes"] = {
+        "HTTPBearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+            "description": "Enter your JWT token (without 'Bearer ' prefix)",
+        }
+    }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 app.add_middleware(
     CORSMiddleware,

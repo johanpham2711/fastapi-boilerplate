@@ -79,6 +79,42 @@ fastapi-boilerplate/
 - Docker & Docker Compose (recommended)
 - uv (package manager) - `pip install uv`
 
+### Virtual Environment
+
+It's recommended to use a dedicated virtual environment for this project.
+
+Recommended (uv):
+
+```bash
+# Create a virtual environment in .venv
+uv venv .venv
+
+# Activate it (Linux/macOS)
+source .venv/bin/activate
+
+# On Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+```
+
+Alternative (built-in venv):
+
+```bash
+# Create a virtual environment in .venv
+python -m venv .venv
+
+# Activate it (Linux/macOS)
+source .venv/bin/activate
+
+# On Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+```
+
+To deactivate at any time:
+
+```bash
+deactivate
+```
+
 ### Installation
 
 1. **Clone the repository**:

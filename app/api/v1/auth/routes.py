@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Security
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from secrets import token_urlsafe
 from app.core.database import get_db
@@ -18,9 +19,9 @@ from app.services.email_service import email_service
 import uuid
 
 router = APIRouter()
+security = HTTPBearer()
 
-
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED, summary="API register new user")
 async def register(
     request: RegisterRequest,
     db: AsyncSession = Depends(get_db),
@@ -53,7 +54,7 @@ async def register(
     )
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login", response_model=TokenResponse, summary="API login")
 async def login(
     request: LoginRequest,
     db: AsyncSession = Depends(get_db),
@@ -78,23 +79,21 @@ async def login(
 
 from fastapi import Request
 
-@router.post("/logout", status_code=status.HTTP_200_OK)
-async def logout(request: Request):
-    auth_header = request.headers.get("Authorization", "")
-    
-    if not auth_header or not auth_header.startswith("Bearer "):
+@router.post("/logout", status_code=status.HTTP_200_OK, summary="API logout")
+async def logout(
+    credentials: HTTPAuthorizationCredentials = Security(security),
+):
+    token = credentials.credentials
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token required"
+            detail="Token required",
         )
-    
-    token = auth_header.replace("Bearer ", "")
     await cache_service.set_blacklist_token(token, ttl=3600)
-    
     return {"message": "Logged out successfully"}
 
 
-@router.post("/forgot-password", status_code=status.HTTP_200_OK)
+@router.post("/forgot-password", status_code=status.HTTP_200_OK, summary="API forgot password")
 async def forgot_password(
     request: ForgotPasswordRequest,
     db: AsyncSession = Depends(get_db),
@@ -113,7 +112,7 @@ async def forgot_password(
     return {"message": "If that email exists, we'll send a password reset link."}
 
 
-@router.post("/forgot-password/verify", status_code=status.HTTP_200_OK)
+@router.post("/forgot-password/verify", status_code=status.HTTP_200_OK, summary="API verify forgot password")
 async def verify_forgot_password(
     request: VerifyForgotPasswordRequest,
     db: AsyncSession = Depends(get_db),
